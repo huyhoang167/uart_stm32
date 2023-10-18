@@ -1,0 +1,56 @@
+/*
+ * uart_services.h
+ *
+ *  Created on: Oct 13, 2023
+ *      Author: hoang
+ */
+
+#ifndef INC_UART_SERVICES_UART_SERVICES_H_
+#define INC_UART_SERVICES_UART_SERVICES_H_
+
+#include "stdint.h"
+#include "main.h"
+#include "string.h"
+
+extern uint8_t chan1_received_data;
+extern uint8_t chan2_received_data;
+
+#define BUFFER_CHAN1_LENGTH 10
+#define BUFFER_CHAN2_LENGTH 10
+#define	TRANSMIT_ERROR		2
+#define TRANSMIT_SUCCESS    1
+#define RESET_VALUE         0
+#define CARRIAGE_ASCII      13
+
+extern uint8_t buffer_chan1_index = RESET_VALUE;
+extern static volatile uint8_t buffer_chan2_index = RESET_VALUE;
+
+extern static volatile uint8_t data_chan1_received_flag = false;
+extern static volatile uint8_t data_chan2_received_flag = false;
+
+
+extern static volatile uint8_t chan1_comletely_send_data_flag;
+extern static volatile uint8_t chan2_comletely_send_data_flag;
+
+
+extern static uint8_t uart_chan1_buffer[BUFFER_CHAN1_LENGTH] = {RESET_VALUE};
+extern static uint8_t uart_chan2_buffer[BUFFER_CHAN1_LENGTH] = {RESET_VALUE};
+
+//#define UART_CHAN1_INIT()	MX_UART4_Init();
+//#define UART_CHAN2_INIT()	MX_UART5_Init();
+
+#define UART_RECEIVED_DATA(huart,received_data) 	HAL_UART_Receive_IT(huart,received_data,1)
+
+#define UART_TRANSMIT_DATA(huart,data,size) 	HAL_UART_Transmit_IT(huart,data,size)
+
+#define UART_Rx_CALLBACK(huart)   	HAL_UART_RxCpltCallback(huart)
+#define UART_Tx_CALLBACK(huart)		HAL_UART_TxCpltCallback(huart)
+
+
+void uart_init(uint8_t uart_channel);
+uint8_t uart_send(uint8_t uart_channel,uint8_t* data);
+uint8_t uart_receive(uint8_t uart_channel, uint8_t* buffer);
+void 	uart_callback_function(uint8_t uart_channel);
+
+
+#endif /* INC_UART_SERVICES_UART_SERVICES_H_ */

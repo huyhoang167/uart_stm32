@@ -1,0 +1,24 @@
+/*
+ * uart_services.h
+ *
+ *  Created on: Oct 13, 2023
+ *      Author: hoang
+ */
+
+#ifndef INC_UART_SERVICES_UART_SERVICES_H_
+#define INC_UART_SERVICES_UART_SERVICES_H_
+
+#include "stdint.h"
+#include "main.h"
+#include "string.h"
+
+extern uint8_t chan1_received_data;
+extern uint8_t chan2_received_data;
+
+void uart_init(uint8_t uart_channel);
+uint8_t uart_send(uint8_t uart_channel,uint8_t* data);
+uint8_t uart_receive(uint8_t uart_channel, uint8_t* buffer);
+void 	uart_callback_function(uint8_t uart_channel);
+
+
+#endif /* INC_UART_SERVICES_UART_SERVICES_H_ */

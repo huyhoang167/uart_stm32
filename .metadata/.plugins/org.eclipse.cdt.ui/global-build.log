@@ -1,0 +1,21 @@
+15:15:21 **** Incremental Build of configuration Debug for project UART_C ****
+make -j8 all 
+arm-none-eabi-g++ "../Core/Inc/UART_Services/uart_services.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Inc/UART_Services/uart_services.d" -MT"Core/Inc/UART_Services/uart_services.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Inc/UART_Services/uart_services.o"
+arm-none-eabi-g++ -o "UART_C.elf" @"objects.list"   -mcpu=cortex-m4 -T"/home/hoang/STM32CubeIDE/workspace_1.13.2/UART_C/STM32F407VETX_FLASH.ld" -Wl,-Map="UART_C.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: UART_C.elf
+ 
+arm-none-eabi-size   UART_C.elf 
+arm-none-eabi-objdump -h -S  UART_C.elf  > "UART_C.list"
+   text	   data	    bss	    dec	    hex	filename
+  13248	     20	   1812	  15080	   3ae8	UART_C.elf
+Finished building: default.size.stdout
+ 
+Finished building: UART_C.list
+ 
+15:15:26 **** Incremental Build of configuration Debug for project UART_C ****
+make -j8 all 
+arm-none-eabi-size   UART_C.elf 
+   text	   data	    bss	    dec	    hex	filename
+  13248	     20	   1812	  15080	   3ae8	UART_C.elf
+Finished building: default.size.stdout
+ 

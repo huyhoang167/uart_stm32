@@ -1,0 +1,4 @@
+../Core/Inc/UART_Services/uart_services.cpp:39:9:uint8_t uart_send(UART_HandleTypeDef*, uint8_t*)	2
+../Core/Inc/UART_Services/uart_services.cpp:57:7:void uart_callback_function(UART_HandleTypeDef*)	1
+../Core/Inc/UART_Services/uart_services.cpp:62:6:void HAL_UART_RxCpltCallback(UART_HandleTypeDef*)	7
+../Core/Inc/UART_Services/uart_services.cpp:100:6:void HAL_UART_TxCpltCallback(UART_HandleTypeDef*)	2
