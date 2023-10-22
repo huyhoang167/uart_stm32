@@ -7,57 +7,125 @@
 
 #include "uart_services.h"
 
+class UART_MSG{
+	uint8_t header[10];
+	uint8_t data[20];
+	uint8_t footer[10];
+public:
+	UART_MSG(uint8_t* header, uint8_t* data, uint8_t* footer){
+		this->header = header;
+		this->data = data;
+		this->footer = end;
+	}
+	uint8_t* get_header(){
+		return header;
+	}
+	uint8_t* get_data(){
+		return data;
+	}
+	uint8_t* get_footer(){
+		return footer;
+	}
+
+};
+
 uint8_t buffer_chan1_index = RESET_VALUE;
 uint8_t buffer_chan2_index = RESET_VALUE;
 
-uint8_t data_chan1_received_flag = false;
-uint8_t data_chan2_received_flag = false;
+uint8_t data_chan1_received_flag = RESET_VALUE;
+uint8_t data_chan2_received_flag = RESET_VALUE;
 
 uint8_t chan1_received_data;
 uint8_t chan2_received_data;
 
-uint8_t chan1_comletely_send_data_flag;
-uint8_t chan2_comletely_send_data_flag;
-
 
 uint8_t uart_chan1_buffer[BUFFER_CHAN1_LENGTH] = {RESET_VALUE};
 uint8_t uart_chan2_buffer[BUFFER_CHAN1_LENGTH] = {RESET_VALUE};
-/*
+
+#define UART_RECEIVED_DATA(chan,received_data) 	HAL_UART_Receive_IT(chan,received_data,1)
+#define UART_TRANSMIT_DATA(chan,data,size) 	HAL_UART_Transmit_IT(chan,data,size)
+
+#define UART_Rx_CALLBACK(chan)   	HAL_UART_RxCpltCallback(chan)
+#define UART_Tx_CALLBACK(chan)		HAL_UART_TxCpltCallback(chan)
+
+UART_HandleTypeDef* uart_obj[NUMBER_CHANNEL];
+
 void uart_init(uint8_t uart_channel){
 	switch(uart_channel){
-		case 1:
-			UART_CHAN1_INIT();
+		case CHANNEL_1:
+			uart_obj[uart_channel-1] = &huart4;
 			break;
-		case 2:
-			UART_CHAN2_INIT();
-			break;
-		default:
+		case CHANNEL_2:
+			uart_obj[uart_channel-1] = &huart5;
 			break;
 	}
-}*/
+}
 
-uint8_t uart_send(UART_HandleTypeDef *huart,uint8_t* data){
-	HAL_StatusTypeDef transmit_status = HAL_OK;
-	uint8_t data_length = RESET_VALUE;
-	char *temp_data = (char *)data;
+uint8_t uart_send(uint8_t uart_channel ,uint8_t* data, uint8_t data_length){
+	switch(uart_channel){
+		case CHANNEL_1:
+			return UART_TRANSMIT_DATA(uart_obj[uart_channel-1],data,data_length);
+			break;
+		case CHANNEL_2:
+			return UART_TRANSMIT_DATA(uart_obj[uart_channel-1],data,data_length);
+			break;
 
-	/* Calculate length of message received */
-	data_length = ((uint8_t)(strlen(temp_data)));
+	}
+	return CHANNEL_NOT_FOUND;
+}
+uint8_t uart_receive(uint8_t uart_channel){
+	if (data_chan1_received_flag == 1){
+		data_chan1_received_flag = 0;
+		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+		switch(uart_channel){
+			case CHANNEL_1:
+				application_uart(uart_channel);
+				break;
+			case CHANNEL_2:
+				application_uart(uart_channel);
+				break;
+		}
 
-	chan1_comletely_send_data_flag = 0;
-
-	transmit_status = UART_TRANSMIT_DATA(huart,data,data_length);
-	if (transmit_status != HAL_OK){
-		return TRANSMIT_ERROR;
 	}
 	return TRANSMIT_SUCCESS;
 }
-
-uint8_t uart_receive(uint8_t uart_channel, uint8_t* buffer);
-void 	uart_callback_function(UART_HandleTypeDef *huart){
-	UART_Rx_CALLBACK(huart);
-	UART_Tx_CALLBACK(huart);
+void uart_callback(uint8_t uart_channel){
+	switch(uart_channel){
+		case CHANNEL_1:
+		{
+			UART_Rx_CALLBACK(uart_obj[uart_channel-1]);
+			UART_Tx_CALLBACK(uart_obj[uart_channel-1]);
+			break;
+		}
+		case CHANNEL_2:
+		{
+			UART_Rx_CALLBACK(uart_obj[uart_channel-1]);
+			UART_Tx_CALLBACK(uart_obj[uart_channel-1]);
+			break;
+		}
+	}
 }
+
+void application_uart(uint8_t uart_channel){
+	switch(uart_channel){
+		case CHANNEL_1:
+		{
+			uint8_t buffer[30] = "Ok\n";
+			uint8_t input_length = (uint8_t)strlen((char*)&uart_chan1_buffer);
+			//if (uart_chan1_buffer[0] == 'H')
+			if (strcmp((char *)&uart_chan1_buffer,"Hi") == 0)
+				uart_send(CHANNEL_1,buffer,2);
+			for(int i = 0; i < input_length;i++){
+				uart_chan1_buffer[i] = RESET_VALUE;
+			}
+			UART_RECEIVED_DATA(uart_obj[uart_channel-1],&chan1_received_data);
+			break;
+		}
+		case CHANNEL_2:
+			break;
+	}
+}
+
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
@@ -68,12 +136,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		}
 		switch(chan1_received_data){
 			case CARRIAGE_ASCII:
+			{
 				buffer_chan1_index = RESET_VALUE;
 				data_chan1_received_flag = 1;
 				break;
-			default:
-				uart_chan1_buffer[buffer_chan1_index++] = (uint8_t)chan2_received_data;
-				break;
+			}
+
+			default:{
+				uart_chan1_buffer[buffer_chan1_index++] = (uint8_t)chan1_received_data;
+			    break;
+			}
 		}
 		UART_RECEIVED_DATA(huart,&chan1_received_data);
 	}
@@ -84,9 +156,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		}
 		switch(chan2_received_data){
 			case CARRIAGE_ASCII:
+			{
 				buffer_chan2_index = RESET_VALUE;
 				data_chan2_received_flag = 1;
 				break;
+			}
 			default:
 				uart_chan2_buffer[buffer_chan2_index++] = (uint8_t)chan2_received_data;
 				break;
@@ -96,11 +170,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 }
 
 
-
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == UART4){
-		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+
+	}
+	if (huart->Instance == UART5){
+
 	}
 
 }

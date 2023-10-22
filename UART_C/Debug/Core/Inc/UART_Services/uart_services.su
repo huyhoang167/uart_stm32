@@ -1,4 +1,7 @@
-../Core/Inc/UART_Services/uart_services.cpp:39:9:uint8_t uart_send(UART_HandleTypeDef*, uint8_t*)	24	static
-../Core/Inc/UART_Services/uart_services.cpp:57:7:void uart_callback_function(UART_HandleTypeDef*)	16	static
-../Core/Inc/UART_Services/uart_services.cpp:62:6:void HAL_UART_RxCpltCallback(UART_HandleTypeDef*)	16	static
-../Core/Inc/UART_Services/uart_services.cpp:100:6:void HAL_UART_TxCpltCallback(UART_HandleTypeDef*)	16	static
+../Core/Inc/UART_Services/uart_services.cpp:25:6:void uart_init(uint8_t)	16	static
+../Core/Inc/UART_Services/uart_services.cpp:36:9:uint8_t uart_send(uint8_t, uint8_t*, uint8_t)	16	static
+../Core/Inc/UART_Services/uart_services.cpp:48:9:uint8_t uart_receive(uint8_t)	16	static
+../Core/Inc/UART_Services/uart_services.cpp:64:6:void uart_callback(uint8_t)	16	static
+../Core/Inc/UART_Services/uart_services.cpp:81:6:void application_uart(uint8_t)	56	static
+../Core/Inc/UART_Services/uart_services.cpp:102:6:void HAL_UART_RxCpltCallback(UART_HandleTypeDef*)	16	static
+../Core/Inc/UART_Services/uart_services.cpp:145:6:void HAL_UART_TxCpltCallback(UART_HandleTypeDef*)	16	static

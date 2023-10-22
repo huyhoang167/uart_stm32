@@ -76,8 +76,8 @@ all: main-build
 main-build: UART_C.elf secondary-outputs
 
 # Tool invocations
-UART_C.elf UART_C.map: $(OBJS) $(USER_OBJS) /home/hoang/STM32CubeIDE/workspace_1.13.2/UART_C/STM32F407VETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "UART_C.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/hoang/STM32CubeIDE/workspace_1.13.2/UART_C/STM32F407VETX_FLASH.ld" -Wl,-Map="UART_C.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+UART_C.elf UART_C.map: $(OBJS) $(USER_OBJS) D:\Art\uart_stm32\UART_C\STM32F407VETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "UART_C.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Art\uart_stm32\UART_C\STM32F407VETX_FLASH.ld" -Wl,-Map="UART_C.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

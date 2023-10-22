@@ -42,7 +42,6 @@
 
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim2;
-
 UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart5;
 
@@ -78,7 +77,8 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+
+	HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -102,15 +102,19 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  UART_RECEIVED_DATA(&huart4,&chan1_received_data);
+  uart_init(CHANNEL_1);
+  //uart_callback(CHANNEL_1);
+  UART_RECEIVED_DATA(uart_obj[CHANNEL_1-1],&chan1_received_data);
   HAL_TIM_Base_Start_IT(&htim2);
-  uint8_t data[30] = "Hello/n";
+  //uint8_t data[30] = "Ok";
   while (1)
   {
     /* USER CODE END WHILE */
-	uart_send(&huart4,data);
-	HAL_Delay(2000);
+
+
+
     /* USER CODE BEGIN 3 */
+	uart_receive(CHANNEL_1);
   }
   /* USER CODE END 3 */
 }

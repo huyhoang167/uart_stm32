@@ -15,10 +15,18 @@
 extern uint8_t chan1_received_data;
 extern uint8_t chan2_received_data;
 
+#define NUMBER_CHANNEL 	2
+
+#define CHANNEL_1   1
+#define	CHANNEL_2   2
+
 #define BUFFER_CHAN1_LENGTH 10
 #define BUFFER_CHAN2_LENGTH 10
-#define	TRANSMIT_ERROR		2
-#define TRANSMIT_SUCCESS    1
+
+
+#define CHANNEL_NOT_FOUND	3
+
+
 #define RESET_VALUE         0
 #define CARRIAGE_ASCII      13
 
@@ -28,28 +36,20 @@ extern uint8_t buffer_chan2_index;
 extern uint8_t data_chan1_received_flag;
 extern uint8_t data_chan2_received_flag;
 
-
-extern uint8_t chan1_comletely_send_data_flag;
-extern uint8_t chan2_comletely_send_data_flag;
-
-
 extern uint8_t uart_chan1_buffer[BUFFER_CHAN1_LENGTH];
 extern uint8_t uart_chan2_buffer[BUFFER_CHAN1_LENGTH];
 
-//#define UART_CHAN1_INIT()	MX_UART4_Init();
-//#define UART_CHAN2_INIT()	MX_UART5_Init();
+extern UART_HandleTypeDef huart4;
+extern UART_HandleTypeDef huart5;
 
-#define UART_RECEIVED_DATA(huart,received_data) 	HAL_UART_Receive_IT(huart,received_data,1)
+extern UART_HandleTypeDef* uart_obj[NUMBER_CHANNEL];
 
-#define UART_TRANSMIT_DATA(huart,data,size) 	HAL_UART_Transmit_IT(huart,data,size)
-
-#define UART_Rx_CALLBACK(huart)   	HAL_UART_RxCpltCallback(huart)
-#define UART_Tx_CALLBACK(huart)		HAL_UART_TxCpltCallback(huart)
 
 
 void uart_init(uint8_t uart_channel);
-uint8_t uart_send(UART_HandleTypeDef *huart,uint8_t* data);
-uint8_t uart_receive(uint8_t uart_channel, uint8_t* buffer);
-
+uint8_t uart_send(uint8_t uart_channel ,uint8_t* data, uint8_t data_length);
+void uart_callback(uint8_t uart_channel);
+uint8_t uart_receive(uint8_t uart_channel);
+void application_uart(uint8_t uart_channel);
 
 #endif /* INC_UART_SERVICES_UART_SERVICES_H_ */
